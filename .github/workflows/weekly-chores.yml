@@ -28,4 +28,4 @@ jobs:
           WHATSAPP_FROM: ${{ secrets.WHATSAPP_FROM }}
           WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
         run: |
-          uv run python weekly_chores.py
+          uv run python main.py
