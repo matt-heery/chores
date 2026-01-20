@@ -1,8 +1,8 @@
-name: Weekly WhatsApp Chores
+name: Weekly Reminder Chores
 
 on:
   schedule:
-    - cron: "0 9 * * 1"
+    - cron: "0 9 * * 5"
   workflow_dispatch:
 
 jobs:
@@ -31,4 +31,4 @@ jobs:
           WA_SEAN: ${{ secrets.WA_SEAN }}
           TODOIST_USER_MAP: ${{ secrets.TODOIST_USER_MAP }}
         run: |
-          uv run python main.py
+          uv run python reminder.py

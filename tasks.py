@@ -1,34 +1,33 @@
-"""Get tasks from Todoist."""
+"""Get tasks from Todoist and group them by assignee."""
 
 import os
+from collections import defaultdict
 
 import requests
 
 TODOIST_API = "https://api.todoist.com/rest/v2"
+PROJECT_NAME = "House Chores"
 
 
-def get_weekly_chores() -> str:
-    """Get weekly chores from Todoist."""
+def get_tasks_by_assignee() -> tuple[dict[str, list[str]], str]:
+    """Get tasks for each member."""
     headers = {"Authorization": f"Bearer {os.environ['TODOIST_API_TOKEN']}"}
 
-    # Get all projects
     projects = requests.get(f"{TODOIST_API}/projects", headers=headers, timeout=100).json()
 
-    project = next(p for p in projects if p["name"] == "house chores")
-
-    project_id = project["id"]
+    project = next(p for p in projects if p["name"] == PROJECT_NAME)
     project_url = project["url"]
 
-    # Get tasks
-    tasks = requests.get(f"{TODOIST_API}/tasks", headers=headers, params={"project_id": project_id}, timeout=100).json()
+    tasks = requests.get(
+        f"{TODOIST_API}/tasks", headers=headers, params={"project_id": project["id"]}, timeout=100
+    ).json()
 
-    chores = [t["content"] for t in tasks]
+    grouped = defaultdict(list)
 
-    if not chores:
-        return "🎉 No chores this week!"
+    for t in tasks:
+        if not t.get("assignee_id"):
+            continue
 
-    msg = "🧹 *This Week's Chores*\n\n"
-    msg += "\n".join(f"• {c}" for c in chores)
-    msg += f"\n\n🔗 Open chore board:\n{project_url}"
+        grouped[t["assignee_id"]].append(t["content"])
 
-    return msg
+    return grouped, project_url
