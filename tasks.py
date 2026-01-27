@@ -6,7 +6,7 @@ from collections import defaultdict
 import requests
 
 TODOIST_API = "https://api.todoist.com/rest/v2"
-PROJECT_NAME = "House Chores"
+PROJECT_NAME = "house chores"
 
 
 def get_tasks_by_assignee() -> tuple[dict[str, list[str]], str]:
@@ -23,7 +23,6 @@ def get_tasks_by_assignee() -> tuple[dict[str, list[str]], str]:
     ).json()
 
     grouped = defaultdict(list)
-
     for t in tasks:
         if not t.get("assignee_id"):
             continue
